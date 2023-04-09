@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ists = exports.fsExistsSync = exports.getGlobalModule = exports.getFuncName = exports.getAppPath = exports.getAppName = exports.getProjectPath = void 0;
 const fs = require("fs");
 const path = require("path");
 function getProjectPath(fileName) {
@@ -13,7 +14,7 @@ function getProjectPath(fileName) {
             return "";
         }
         let res = pathArr.slice(0, i).join("/");
-        if (exports.fsExistsSync(res + "/package.json")) {
+        if ((0, exports.fsExistsSync)(res + "/package.json")) {
             return res;
         }
         else {
@@ -72,7 +73,7 @@ exports.getAppPath = getAppPath;
  * 则拼出来的方法名为：BUN_Action_Api_Home
  * @return string
  */
-exports.getFuncName = (path, keypath) => {
+const getFuncName = (path, keypath) => {
     let newpath = path.replace(".ts", "");
     if (keypath === newpath) {
         newpath = "";
@@ -93,9 +94,10 @@ exports.getFuncName = (path, keypath) => {
     }
     return arr.join("_");
 };
+exports.getFuncName = getFuncName;
 function getModuleList(path, keyPath, context, fileName) {
     let key = "";
-    if (!exports.fsExistsSync(path)) {
+    if (!(0, exports.fsExistsSync)(path)) {
         // 如果必要且找不到对应目录，则报警
         return;
     }
@@ -118,10 +120,10 @@ function getModuleList(path, keyPath, context, fileName) {
             return;
         }
         // 判断文件后缀
-        if (!exports.ists(filename)) {
+        if (!(0, exports.ists)(filename)) {
             return;
         }
-        key = exports.getFuncName(path + "/" + filename, keyPath);
+        key = (0, exports.getFuncName)(path + "/" + filename, keyPath);
         if (key.split("_").length <= 1)
             return;
         filename = filename.split(".")[0];
@@ -183,7 +185,7 @@ exports.getGlobalModule = getGlobalModule;
 //     }
 //     return '';
 // }
-exports.fsExistsSync = (path) => {
+const fsExistsSync = (path) => {
     try {
         fs.accessSync(path, fs.constants.F_OK);
     }
@@ -192,7 +194,8 @@ exports.fsExistsSync = (path) => {
     }
     return true;
 };
-exports.ists = (filename) => {
+exports.fsExistsSync = fsExistsSync;
+const ists = (filename) => {
     // 判断文件后缀
     const pos = filename.lastIndexOf(".");
     if (pos === -1) {
@@ -207,4 +210,5 @@ exports.ists = (filename) => {
     }
     return true;
 };
+exports.ists = ists;
 //# sourceMappingURL=util.js.map

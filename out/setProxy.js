@@ -135,11 +135,10 @@ module.exports = (languageService, proxy, extraLength, info) => {
         return prior;
     };
     proxy.getNameOrDottedNameSpan = (fileName, startPos, endPos) => {
-        var _a;
         startPos = startPos - extraLength;
         endPos = endPos - extraLength;
         const prior = languageService.getNameOrDottedNameSpan(fileName, startPos, endPos);
-        prior.start = ((_a = prior) === null || _a === void 0 ? void 0 : _a.start) - extraLength;
+        prior.start = prior?.start - extraLength;
         return prior;
     };
     proxy.getSyntacticDiagnostics = (fileName) => {
@@ -187,13 +186,12 @@ module.exports = (languageService, proxy, extraLength, info) => {
     };
     // Remove specified entries from completion list
     proxy.getCompletionsAtPosition = (fileName, position, options) => {
-        var _a;
         position = position + extraLength;
         const prior = languageService.getCompletionsAtPosition(fileName, position, options);
         // const oldLength = (prior as any).entries.length;
         // (prior as any).entries = (prior as any).entries.filter((e: any) => whatToRemove.indexOf(e.name) < 0);
         // // (prior as any).entries[0].name = `${_getScriptSnapshot(fileName)}`;
-        prior.entries = (_a = prior) === null || _a === void 0 ? void 0 : _a.entries.map(e => {
+        prior.entries = prior?.entries.map(e => {
             e.source = String(Number(e.source) - extraLength);
             return e;
         });

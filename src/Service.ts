@@ -1,5 +1,5 @@
 import * as tss from 'typescript/lib/tsserverlibrary';
-
+import fs = require('fs');
 class MyLanguageServiceHost implements tss.LanguageServiceHost {
     files: { [fileName: string]: { file: tss.IScriptSnapshot; ver: number } } = {}
 
@@ -26,7 +26,14 @@ class MyLanguageServiceHost implements tss.LanguageServiceHost {
         }
         return names;
     }
-
+    fileExists(path: string): boolean {
+        return fs.existsSync(path);
+    }
+    readFile(path: string, encoding?: string) {
+        if (fs.existsSync(path)) {
+            return fs.readFileSync(path, { encoding: encoding || 'utf8' });
+        }
+    }
     addFile(fileName: string, body: string) {
         var snap = tss.ScriptSnapshot.fromString(body);
         snap.getChangeRange = _ => undefined;

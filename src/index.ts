@@ -47,9 +47,9 @@ export = (modules: { typescript: typeof tss }) => {
                 str += 'import ' + key + ' = require("'+ value + '");\n';
             });
             if((body as string).indexOf('extends App') !== -1) {
-                str += 'const App = bun.app'+ (appName ? '.' + appName : '') + '.class;\n';
+                str += 'var App = bun.app'+ (appName ? '.' + appName : '') + '.class;\n';
             }
-            info.project.projectService.logger.msg("2233333333333"+str);
+            // info.project.projectService.logger.msg("2233333333333"+str);
             
             // extraLength = str.length;
             // str = "import Common_BasePage = require('../../common/BasePage.ts');";

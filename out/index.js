@@ -12,25 +12,24 @@ module.exports = (modules) => {
         let _getScriptSnapshot = info.languageServiceHost.getScriptSnapshot;
         let extraLength = 0;
         info.languageServiceHost.getScriptSnapshot = function (fileName) {
-            var _a;
             // return _getScriptSnapshot.call(info.languageServiceHost, fileName);
             let snap = _getScriptSnapshot.call(info.languageServiceHost, fileName);
             // let body = fs.readFileSync(fileName).toString();
-            let body = (_a = snap) === null || _a === void 0 ? void 0 : _a.getText(0, snap.getLength());
+            let body = snap?.getText(0, snap.getLength());
             if (fileName.indexOf('node_modules') !== -1) {
                 return ts.ScriptSnapshot.fromString(body);
             }
-            let projectPath = util_1.getProjectPath(fileName);
+            let projectPath = (0, util_1.getProjectPath)(fileName);
             if (!projectPath) {
                 return ts.ScriptSnapshot.fromString(body);
             }
-            let appPath = util_1.getAppPath(projectPath, appconfPath, fileName);
+            let appPath = (0, util_1.getAppPath)(projectPath, appconfPath, fileName);
             if (fileName.indexOf(appPath) === -1) {
                 return ts.ScriptSnapshot.fromString(body);
             }
-            let appName = util_1.getAppName(projectPath, appconfPath, fileName, isSingle);
-            const globalModule = util_1.getGlobalModule(appconfPath, fileName);
-            let currentKey = util_1.getFuncName(fileName, appPath);
+            let appName = (0, util_1.getAppName)(projectPath, appconfPath, fileName, isSingle);
+            const globalModule = (0, util_1.getGlobalModule)(appconfPath, fileName);
+            let currentKey = (0, util_1.getFuncName)(fileName, appPath);
             let str = '';
             Object.entries(globalModule).forEach(([key, value]) => {
                 // 过滤自身名字、已require引入的名字 以及 未引用的名字
@@ -41,9 +40,9 @@ module.exports = (modules) => {
                 str += 'import ' + key + ' = require("' + value + '");\n';
             });
             if (body.indexOf('extends App') !== -1) {
-                str += 'const App = bun.app' + (appName ? '.' + appName : '') + '.class;\n';
+                str += 'var App = bun.app' + (appName ? '.' + appName : '') + '.class;\n';
             }
-            info.project.projectService.logger.msg("2233333333333" + str);
+            // info.project.projectService.logger.msg("2233333333333"+str);
             // extraLength = str.length;
             // str = "import Common_BasePage = require('../../common/BasePage.ts');";
             body = body + str;
